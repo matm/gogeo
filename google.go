@@ -9,6 +9,7 @@ import (
 	"errors"
 	"fmt"
 	"net/http"
+	"net/url"
 )
 
 const (
@@ -45,7 +46,8 @@ func (gc *GoogleGeoCoder) Geocode(loc *Location) (*GpsPoint, error) {
 		return nil, errors.New(fmt.Sprintf("%s: can't geocode a nil location", gc.serviceName))
 	}
 
-	resp, err := sendRequest(GET, googleServiceUrl+fmt.Sprintf("address=%s&sensor=false", loc.FullAddress), nil)
+	resp, err := sendRequest(GET, googleServiceUrl+fmt.Sprintf("address=%s&sensor=false",
+		url.QueryEscape(loc.FullAddress)), nil)
 	if err != nil {
 		return nil, errors.New(fmt.Sprintf("%s: error sending request: %s", gc.serviceName, err.Error()))
 	}

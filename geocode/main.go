@@ -41,7 +41,7 @@ func main() {
 
 	gps, err := gc.Geocode(&gogeo.Location{FullAddress: flag.Arg(0)})
 	if err != nil {
-		fmt.Printf("geocoding: %s", err.Error())
+		fmt.Printf("geocoding: %s\n", err.Error())
 	}
 	if gps == nil {
 		fmt.Println("no GPS coordinates returned")
