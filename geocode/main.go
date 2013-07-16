@@ -1,19 +1,41 @@
 package main
 
 import (
+	"flag"
 	"fmt"
 	"github.com/matm/gogeo"
 	"os"
 )
 
 func main() {
-	if len(os.Args) != 2 {
-		fmt.Printf("Usage: %s full_address\n", os.Args[0])
+	flag.Usage = func() {
+		fmt.Fprintf(os.Stderr, "Usage: %s [option] full_street_address\n", os.Args[0])
+		flag.PrintDefaults()
 		os.Exit(2)
 	}
 
-	gc := gogeo.NewMapQuestGeoCoder()
-	gps, err := gc.Geocode(&gogeo.Location{FullAddress: os.Args[1]})
+	mqprov := flag.Bool("mq", false, "use MapQuest geocoding API")
+	gprov := flag.Bool("g", false, "use Google geocoding API")
+
+	flag.Parse()
+
+	if len(flag.Args()) != 1 {
+		fmt.Fprint(os.Stderr, "Only one argument allowed for street address.\n")
+		flag.Usage()
+	}
+
+	var gc gogeo.GeoCoder
+
+	if *gprov {
+		gc = gogeo.NewGoogleGeoCoder()
+	} else if *mqprov {
+		gc = gogeo.NewMapQuestGeoCoder()
+	} else {
+		fmt.Fprintf(os.Stderr, "Please specify a request provider.\n")
+		flag.Usage()
+	}
+
+	gps, err := gc.Geocode(&gogeo.Location{FullAddress: flag.Arg(0)})
 	if err != nil {
 		fmt.Printf("geocoding: %s", err.Error())
 	}
