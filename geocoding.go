@@ -1,3 +1,8 @@
+// Copyright 2013 Mathias Monnerville. All rights reserved.
+// Use of this source code is governed by a GPL
+// license that can be found in the LICENSE file.
+
+// Package gogeo is a library for geocoding addresses
 package gogeo
 
 import (
